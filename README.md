@@ -1,2 +1,2 @@
 # contractApp
-Mobile app for finding contractors near you (electricians, gas, plumbing, building)
+Web app for finding contractors near you (electricians, gas, plumbing, building)
