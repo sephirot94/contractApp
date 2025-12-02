@@ -1,0 +1,104 @@
+.location-input {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #e2e8f0;
+}
+
+.location-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.location-header h3 {
+  color: #2d3748;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.location-active {
+  color: #667eea;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.location-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.location-button {
+  padding: 0.75rem 1.5rem;
+  border: 2px solid #667eea;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.location-button.current {
+  background-color: #667eea;
+  color: white;
+}
+
+.location-button.current:hover {
+  background-color: #5568d3;
+  transform: translateY(-1px);
+}
+
+.manual-location {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.location-coord-input {
+  flex: 1;
+  min-width: 150px;
+  padding: 0.75rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.location-coord-input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.location-button.manual {
+  background-color: white;
+  color: #667eea;
+}
+
+.location-button.manual:hover {
+  background-color: #f7fafc;
+  transform: translateY(-1px);
+}
+
+.location-hint {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: #718096;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .location-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .manual-location {
+    flex-direction: column;
+  }
+
+  .location-button {
+    width: 100%;
+  }
+}
