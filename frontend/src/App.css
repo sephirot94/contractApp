@@ -39,6 +39,39 @@
   margin-bottom: 2rem;
 }
 
+.city-selector {
+  margin-bottom: 1.5rem;
+}
+
+.city-selector label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 1rem;
+}
+
+.city-dropdown {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.city-dropdown:hover {
+  border-color: #667eea;
+}
+
+.city-dropdown:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
 .contractors-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
