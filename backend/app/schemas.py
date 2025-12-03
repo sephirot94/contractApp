@@ -1,24 +1,29 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional
-from app.models import ContractorType, PriceRange
+
+from app.constants import Specialty
+from app.models import PriceRange
+
 
 class ContractorBase(BaseModel):
     name: str
-    specialty: ContractorType
+    specialty: Specialty
     location: str
     latitude: float
     longitude: float
     price_range: PriceRange
-    phone: Optional[str] = None
-    email: Optional[EmailStr] = None
-    description: Optional[str] = None
+    phone: str | None = None
+    email: EmailStr | None = None
+    description: str | None = None
+    city_id: int
+
 
 class ContractorCreate(ContractorBase):
     pass
 
+
 class ContractorResponse(ContractorBase):
     id: int
-    distance: Optional[float] = None
+    distance: float | None = None
 
     class Config:
         from_attributes = True
