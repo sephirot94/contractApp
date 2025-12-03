@@ -1,8 +1,10 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.database import engine, Base
-from app.routers import contractors
-import os
+
+from app.database import Base, engine
+from app.routers import cities, contractors
 
 app = FastAPI(title="Contractor Finder API")
 
@@ -22,10 +24,13 @@ Base.metadata.create_all(bind=engine)
 
 # Include routers
 app.include_router(contractors.router, prefix="/api", tags=["contractors"])
+app.include_router(cities.router, prefix="/api", tags=["cities"])
+
 
 @app.get("/")
 def read_root():
     return {"message": "Contractor Finder API is running"}
+
 
 @app.get("/health")
 def health_check():

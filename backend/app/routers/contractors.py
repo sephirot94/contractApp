@@ -1,12 +1,15 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.orm import Session
-from typing import List, Optional
-from app.database import get_db
-from app.models import Contractor, ContractorType
-from app.schemas import ContractorResponse, ContractorCreate
 import math
 
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy.orm import Session
+
+from app.constants import Specialty
+from app.database import get_db
+from app.models import Contractor
+from app.schemas import ContractorCreate, ContractorResponse
+
 router = APIRouter()
+
 
 def calculate_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     """
@@ -18,28 +21,34 @@ def calculate_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> fl
     dlat = math.radians(lat2 - lat1)
     dlon = math.radians(lon2 - lon1)
 
-    a = (math.sin(dlat / 2) ** 2 +
-         math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) *
-         math.sin(dlon / 2) ** 2)
+    a = (
+        math.sin(dlat / 2) ** 2
+        + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2) ** 2
+    )
 
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     distance = R * c
 
     return round(distance, 2)
 
-@router.get("/contractors", response_model=List[ContractorResponse])
+
+@router.get("/contractors", response_model=list[ContractorResponse])
 def get_contractors(
-    specialty: Optional[ContractorType] = None,
-    latitude: Optional[float] = None,
-    longitude: Optional[float] = None,
-    max_distance: Optional[float] = Query(None, description="Maximum distance in km"),
-    db: Session = Depends(get_db)
+    city_id: int | None = Query(None, description="Filter by city ID"),
+    specialty: Specialty | None = None,
+    latitude: float | None = None,
+    longitude: float | None = None,
+    max_distance: float | None = Query(None, description="Maximum distance in km"),
+    db: Session = Depends(get_db),
 ):
     """
-    Get contractors filtered by specialty and/or location.
+    Get contractors filtered by city, specialty and/or location.
     Results are sorted by distance if lat/lon provided.
     """
     query = db.query(Contractor)
+
+    if city_id:
+        query = query.filter(Contractor.city_id == city_id)
 
     if specialty:
         query = query.filter(Contractor.specialty == specialty)
@@ -51,8 +60,7 @@ def get_contractors(
         contractor_list = []
         for contractor in contractors:
             distance = calculate_distance(
-                latitude, longitude,
-                contractor.latitude, contractor.longitude
+                latitude, longitude, contractor.latitude, contractor.longitude
             )
 
             # Filter by max distance if specified
@@ -68,7 +76,7 @@ def get_contractors(
                     "phone": contractor.phone,
                     "email": contractor.email,
                     "description": contractor.description,
-                    "distance": distance
+                    "distance": distance,
                 }
                 contractor_list.append(ContractorResponse(**contractor_dict))
 
@@ -78,6 +86,7 @@ def get_contractors(
 
     return [ContractorResponse.model_validate(c) for c in contractors]
 
+
 @router.get("/contractors/{contractor_id}", response_model=ContractorResponse)
 def get_contractor(contractor_id: int, db: Session = Depends(get_db)):
     """Get a specific contractor by ID."""
@@ -85,6 +94,7 @@ def get_contractor(contractor_id: int, db: Session = Depends(get_db)):
     if not contractor:
         raise HTTPException(status_code=404, detail="Contractor not found")
     return contractor
+
 
 @router.post("/contractors", response_model=ContractorResponse)
 def create_contractor(contractor: ContractorCreate, db: Session = Depends(get_db)):
@@ -95,7 +105,8 @@ def create_contractor(contractor: ContractorCreate, db: Session = Depends(get_db
     db.refresh(db_contractor)
     return db_contractor
 
+
 @router.get("/specialties")
 def get_specialties():
     """Get list of available contractor specialties."""
-    return {"specialties": [e.value for e in ContractorType]}
+    return {"specialties": [e.value for e in Specialty]}

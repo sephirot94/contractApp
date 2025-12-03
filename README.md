@@ -51,7 +51,52 @@ contractApp/
 └── README.md
 ```
 
-## Quick Start
+## 🚀 Quick Start (Recommended - 30 seconds)
+
+### Prerequisites
+
+- **Docker Desktop** installed and running ([Get Docker](https://www.docker.com/products/docker-desktop))
+- **Make** (pre-installed on Mac/Linux, [install on Windows](https://gnuwin32.sourceforge.net/packages/make.htm))
+
+### Launch the App
+
+```bash
+# Clone the repository
+git clone <your-repo-url>
+cd contractApp
+
+# Copy environment file (defaults work out of the box)
+cp .env.example .env
+
+# Start everything (build, start, and seed database)
+make start
+```
+
+**That's it!** Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Available Make Commands
+
+```bash
+make help              # Show all available commands
+make start             # Quick start: build, start, and seed DB
+make up                # Start all services
+make down              # Stop all services
+make logs              # View logs
+make test              # Run all tests
+make quality           # Run linters, type-check, and tests
+```
+
+### Service URLs
+
+- **Frontend**: [http://localhost:3000](http://localhost:3000)
+- **Backend API**: [http://localhost:8000](http://localhost:8000)
+- **API Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+---
+
+## 📖 Detailed Setup (Manual)
+
+If you prefer not to use Make, here are the manual commands:
 
 ### Prerequisites
 
@@ -75,7 +120,7 @@ contractApp/
 
 3. **Start the application**
    ```bash
-   docker-compose up --build
+   docker-compose up -d --build
    ```
 
    This will:
@@ -85,8 +130,6 @@ contractApp/
    - Automatically create database tables
 
 4. **Seed the database with sample data**
-
-   In a new terminal window, run:
    ```bash
    docker-compose exec backend python -m app.seed_data
    ```
@@ -161,7 +204,53 @@ Get list of available contractor specialties
 
 ## Development
 
-### Running without Docker
+### Makefile Commands (Recommended)
+
+The project includes a comprehensive Makefile for easy development:
+
+```bash
+# Quick start
+make start             # Build, start services, and seed database
+make up                # Start all services
+make down              # Stop all services
+make restart           # Restart all services
+
+# Development
+make logs              # View all logs
+make logs-backend      # View backend logs
+make logs-frontend     # View frontend logs
+make shell-backend     # Open shell in backend container
+make shell-frontend    # Open shell in frontend container
+
+# Testing
+make test              # Run all tests
+make test-backend      # Run backend tests only
+make test-frontend     # Run frontend tests only
+make test-coverage     # Run tests with coverage
+
+# Code Quality
+make lint              # Run linters
+make format            # Format all code
+make type-check        # Run type checker
+make quality           # Run all quality checks
+
+# Database
+make seed              # Seed database with sample data
+make db-shell          # Open MySQL shell
+make db-reset          # Reset database (deletes all data)
+
+# Utilities
+make status            # Show service status
+make info              # Show service URLs
+make clean             # Clean up containers and files
+make help              # Show all commands
+```
+
+**Why Docker?** Using Docker ensures your local environment matches production exactly. All dependencies are isolated in containers, preventing "works on my machine" issues.
+
+### Running without Docker (Not Recommended)
+
+**⚠️ Warning**: Running without Docker may cause inconsistencies between development and production.
 
 **Backend:**
 ```bash
@@ -177,6 +266,8 @@ cd frontend
 npm install
 npm start
 ```
+
+**Note**: You'll need to set up MySQL separately if running without Docker.
 
 ### Dependency Management
 

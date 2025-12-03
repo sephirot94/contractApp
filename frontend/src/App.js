@@ -13,11 +13,13 @@ function App() {
   const [specialty, setSpecialty] = useState('');
   const [location, setLocation] = useState(null);
   const [specialties, setSpecialties] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [selectedCity, setSelectedCity] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
     fetchSpecialties();
-    fetchContractors();
+    fetchCities();
   }, []);
 
   const fetchSpecialties = async () => {
@@ -29,11 +31,21 @@ function App() {
     }
   };
 
+  const fetchCities = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/api/cities`);
+      setCities(response.data);
+    } catch (err) {
+      console.error('Error fetching cities:', err);
+    }
+  };
+
   const fetchContractors = async (filters = {}) => {
     setLoading(true);
     setError('');
     try {
       const params = {};
+      if (filters.cityId) params.city_id = filters.cityId;
       if (filters.specialty) params.specialty = filters.specialty;
       if (filters.location) {
         params.latitude = filters.location.latitude;
@@ -52,7 +64,11 @@ function App() {
   };
 
   const handleSearch = () => {
-    fetchContractors({ specialty, location });
+    fetchContractors({ cityId: selectedCity, specialty, location });
+  };
+
+  const handleCityChange = (cityId) => {
+    setSelectedCity(cityId);
   };
 
   const handleSpecialtyChange = (newSpecialty) => {
@@ -70,7 +86,7 @@ function App() {
           const newLocation = {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
-            name: 'Your Location'
+            name: 'Your Location',
           };
           setLocation(newLocation);
           fetchContractors({ specialty, location: newLocation });
@@ -94,6 +110,23 @@ function App() {
 
       <main className="App-main">
         <div className="search-section">
+          <div className="city-selector">
+            <label htmlFor="city-select">Select City:</label>
+            <select
+              id="city-select"
+              value={selectedCity}
+              onChange={(e) => handleCityChange(e.target.value)}
+              className="city-dropdown"
+            >
+              <option value="">All Cities</option>
+              {cities.map((city) => (
+                <option key={city.id} value={city.id}>
+                  {city.name}, {city.country}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <SearchBar
             specialty={specialty}
             specialties={specialties}
